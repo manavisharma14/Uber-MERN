@@ -77,8 +77,15 @@ captainSchema.methods.generateAuthToken = function () {
 
 
 captainSchema.methods.comparePassword = async function (password) {
+    if (!this.password) {
+        console.log("No password in this object:", this);  // Log if password is missing
+        throw new Error('Password or hashed password not found');
+    }
+
+    console.log("Comparing password:", password, "with hashed password:", this.password);
     return await bcrypt.compare(password, this.password);
 }
+
 
 
 captainSchema.statics.hashPassword = async function (password) {

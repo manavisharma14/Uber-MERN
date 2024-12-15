@@ -1,12 +1,14 @@
 const userModel = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 const blacklistTokenModel = require('../models/blacklistToken.model');
+const captainModel = require('../models/captain.model');
 
 module.exports.authUser = async (req, res, next) => {
     try {
         // Extract token from cookies or Authorization header
         const token = req.cookies.token || 
                       (req.headers.authorization && req.headers.authorization?.split(' ')[1]);
+        console.log('Token:', token);
         
         if (!token) {
             return res.status(401).json({ message: 'Unauthorized: No token provided' });
@@ -57,6 +59,7 @@ module.exports.authCaptain = async (req, res, next) => {
 
         const captain = await captainModel.findById(decoded._id);
         req.captain = captain;
+        return next();
     }
     catch(error){
         console.error('Authentication error:', error);
